@@ -17,7 +17,7 @@ router.get('',  async (req, res) => {
         .limit(perPage)
         .exec();
 
-        const count = await Post.count();
+        const count = await Post.countDocuments();
         const nextPage = parseInt(page) + 1;
         const hasNextPage = nextPage <= Math.ceil(count / perPage);
 
@@ -31,6 +31,31 @@ router.get('',  async (req, res) => {
        console.log(error); 
     }
 });
+
+
+
+/**
+ * GET/
+ * Post: id
+ */
+router.get("/post/:id", async (req, res) =>
+{
+    try {
+        let slug = req.params.id;
+        
+
+        const data = await Post.findById({_id: slug});
+        res.render("post", {data});
+        
+    } catch (error) {
+       console.log(error) 
+    }
+})
+
+
+
+
+
 
 router.get('/about', (req, res) => {
     res.render("about");
