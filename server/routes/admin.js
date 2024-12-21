@@ -85,7 +85,9 @@ router.get("/dashboard", authMiddleware,async (req, res) =>
 {
   try {
     const data = await Post.find();
-    res.render('admin/dashboard', {data});
+    res.render('admin/dashboard', {data,
+      layout: adminLayout
+    });
 
   } catch (error) {
     
@@ -130,10 +132,65 @@ router.post("/register", async (req, res) =>
 router.get("/add-post", authMiddleware, async (reg, res) =>
 {
   try {
-    const locals = {add }
+    const locals = {title: "Add Post"};
+    const data = await Post.find();
+
+    res.render("admin/add-post", {
+      locals,
+      layout: adminLayout,
+      data
+    });
   } catch (error) {
-    
+    console.log(error);
   }
-})
+});
+
+/**
+ * POST/
+ * create new post
+ */
+
+router.post("/add-post", authMiddleware, async (req, res) =>
+  {
+    try {
+      try {
+        const newPost = new Post({
+          title: req.body.title,
+          body: req.body.body
+        });
+        await Post.create(newPost);
+        res.redirect("/dashboard");
+      } catch (error) {
+        console.log(error);
+      }
+      
+      
+    } catch (error) {
+      console.log(error);
+    }
+});
+
+/**
+ * GET/ 
+ * editing new post 
+ */
+router.put("/edit-post/:id", authMiddleware, async (reg, res) =>
+  {
+    try {
+      const locals = {title: "Add Post"};
+      const data = await Post.findByIdAndUpdate(req.param.id, {
+        title: req.body.title,
+        body: req.body.body;
+      })
+  
+      res.render("admin/add-post", {
+        locals,
+        layout: adminLayout,
+        data
+      });
+    } catch (error) {
+      console.log(error);
+    }
+  });
 
 module.exports = router;
