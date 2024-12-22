@@ -171,26 +171,50 @@ router.post("/add-post", authMiddleware, async (req, res) =>
 });
 
 /**
- * GET/ 
+ * GET/
  * editing new post 
  */
-router.put("/edit-post/:id", authMiddleware, async (reg, res) =>
+router.get("/edit-post/:id", authMiddleware, async (req, res) =>
   {
     try {
       const locals = {title: "Add Post"};
-      const data = await Post.findByIdAndUpdate(req.param.id, {
-        title: req.body.title,
-        body: req.body.body;
+      const data = await Post.findOne({_id: req.params.id})
+
+      res.render("admin/edit-post", {data,
+        layout: adminLayout
       })
-  
-      res.render("admin/add-post", {
-        locals,
-        layout: adminLayout,
-        data
-      });
     } catch (error) {
       console.log(error);
     }
   });
 
+/**
+ * Put/ 
+ * editing new post 
+ */
+router.put("/edit-post/:id", authMiddleware, async (req, res) =>
+  {
+    try {
+      const locals = {title: "Add Post"};
+      const data = await Post.findByIdAndUpdate(req.params.id, {
+        title: req.body.title,
+        body: req.body.body,
+        updatedAt: Date.now()
+      })
+  
+      res.redirect(`/edit-post/${req.params.id}`);
+    } catch (error) {
+      console.log(error);
+    }
+  });
+
+router.delete("/delete-post/:id",  async (req, res) => {
+
+  try {
+    await Post.deleteOne( { _id: req.params.id} );
+    res.redirect("/dashboard");
+  } catch (error) {
+    console.log(error);
+  }
+}) 
 module.exports = router;

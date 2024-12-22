@@ -3,7 +3,7 @@ require('dotenv').config();
 const express = require('express');
 const expressLayout = require("express-ejs-layouts");
 const connectDB = require("./server/config/db")
-
+const methodOverride = require('method-override');
 const cookieParser = require("cookie-parser");
 const session = require('express-session');
 const MongoStore = require('connect-mongo');
@@ -35,10 +35,14 @@ app.use(session(
 
 app.use(express.static("public"));
 
+app.use(methodOverride('_method'))
+
 //template engine
 app.use(expressLayout);
 app.set("layout", "./layouts/main");
 app.set("view engine", "ejs");
+
+
 
 
 
